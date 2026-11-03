@@ -1,4 +1,8 @@
 # Swell VOX — prototype 0.1
+
+![Interface de Swell VOX](docs/swell-vox.png)
+
+*Capture de l’application autonome, sans signal audio.*
 Chaîne vocale sans menus, dérivée de la base JUCE Swell Vocal Lift.
 
 Clean : atténuation du rumble sous 85 Hz et du bas-médium.
