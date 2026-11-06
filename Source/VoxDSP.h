@@ -23,9 +23,9 @@ public:
  }
  void tick(float* x,int n,float clean,const float* v){
  float peak=0;
- for(int c=0;c<n;++c){auto& s=ch[c];s.rumble+=cr*(x[c]-s.rumble);s.body+=cb*(x[c]-s.body);x[c]-=clean*(s.rumble+.22f*(s.body-s.rumble));peak=std::max(peak,std::abs(x[c]));}
+ for(int c=0;c<n;++c){auto& s=ch[c];s.rumble+=cr*(x[c]-s.rumble);s.body+=cb*(x[c]-s.body);x[c]-=clean*(s.rumble+.4f*(s.body-s.rumble));peak=std::max(peak,std::abs(x[c]));}
  fast=follow(peak,fast,af,rf);
- float gf=gain(fast,-8-16*v[0],4);
+ float gf=gain(fast,-13-18*v[0],5);
  slow=follow(peak*gf,slow,as,rs);
  float gc=gf*gain(slow,-14-12*v[0],2);
  gc=(1-v[0])+v[0]*gc*std::pow(10.f,5*v[0]/20);
@@ -34,6 +34,6 @@ public:
  float detect=std::clamp((hp/(full+.003f)-.3f)/.45f,0.f,1.f);
  ess=follow(detect,ess,ae,re);
  float out=std::pow(10.f,(v[4]-.5f)*24/20);
- for(int c=0;c<n;++c){float h=hi[c]*(1-.8f*v[1]*ess);float y=x[c]-hi[c]+h*(1+.65f*v[2]);float drive=1+2*v[3];y+=v[3]*.3f*(std::tanh(y*drive)/drive-y);x[c]=y*out;}
+ for(int c=0;c<n;++c){float h=hi[c]*(1-.8f*v[1]*ess);float y=x[c]-hi[c]+h*(1+1.65f*v[2]);float drive=1+5*v[3];y+=v[3]*.7f*(std::tanh(y*drive)/drive-y);x[c]=y*out;}
  }
 };

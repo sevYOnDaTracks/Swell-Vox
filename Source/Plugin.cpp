@@ -55,7 +55,7 @@ public:
  place(extra[3],704,443,140,140);
  place(extra[4],850,443,125,140);
  place(presets,390,24,240,35);place(slotA,820,24,34,35);place(slotB,861,24,34,35);place(copy,905,24,67,35);
- place(reset,650,676,130,32);place(bypass,884,676,90,32);
+ place(reset,484,676,130,32);place(bypass,630,676,90,32);
  }
 };
 class LiftProcessor : public juce::AudioProcessor {
@@ -132,6 +132,7 @@ void LiftEditor::paint(juce::Graphics& g){
  label(g,"FET + OPTO",{344,635,194,18},10,dim,juce::Justification::centred);
  const char* hints[]={"Graves nets","Sifflantes douces","Clarte","Couleur","-12 / +12 dB"};
  for(int i=0;i<5;++i)label(g,hints[i],{xx[i],599,i==4?125.f:140.f,20},10,dim,juce::Justification::centred);
- label(g,"Nettoyer / Stabiliser / Adoucir / Colorer",{27,676,600,33},11,accent);
+ label(g,"v" JucePlugin_VersionString "  /  by @sevyondatracks",{740,676,232,33},12,dim,juce::Justification::right);
+ label(g,"Nettoyer / Stabiliser / Adoucir / Colorer",{27,676,435,33},11,accent);
 }
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter(){return new LiftProcessor();}
