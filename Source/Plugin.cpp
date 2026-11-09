@@ -1,4 +1,5 @@
 #include <juce_audio_utils/juce_audio_utils.h>
+#include "Licence/SwellLicence.h"
 #include <juce_dsp/juce_dsp.h>
 #include "BinaryData.h"
 #include "VoxDSP.h"
@@ -60,6 +61,10 @@ public:
 };
 class LiftProcessor : public juce::AudioProcessor {
 public:
+    // Licence Swell : partagée par toutes les instances ; silence tant que le plugin n'est pas activé.
+    juce::SharedResourcePointer<swell::Licence> licence;
+
+public:
  juce::AudioProcessorValueTreeState state;
  juce::SmoothedValue<float> amount,enabled; juce::SmoothedValue<float> controls[5];
  VoxDSP dsp; std::atomic<float> inputMeter{0},outputMeter{0};
@@ -85,9 +90,9 @@ public:
   oversampling->processSamplesDown(block);mixer.mixWetSamples(block);float op=0;for(int c=0;c<b.getNumChannels();++c)op=std::max(op,b.getMagnitude(c,0,b.getNumSamples()));outputMeter.store(op);
  }
  juce::AudioProcessorParameter* getBypassParameter() const override{return state.getParameter("bypass");}
- void processBlock(juce::AudioBuffer<float>& b,juce::MidiBuffer&) override{render(b,false);}
+ void processBlock(juce::AudioBuffer<float>& b,juce::MidiBuffer&) override{ if (! licence->isUnlocked()) { b.clear(); return; } render(b,false);}
  void processBlockBypassed(juce::AudioBuffer<float>& b,juce::MidiBuffer&) override{render(b,true);}
- bool hasEditor()const override{return true;}juce::AudioProcessorEditor* createEditor()override{return new LiftEditor(*this);}
+ bool hasEditor()const override{return true;}juce::AudioProcessorEditor* createEditor()override{return swell::LicenceGuard::attach (new LiftEditor(*this));}
  int getNumPrograms()override{return 1;}int getCurrentProgram()override{return 0;}void setCurrentProgram(int)override{}const juce::String getProgramName(int)override{return "Default";}void changeProgramName(int,const juce::String&)override{}
  void getStateInformation(juce::MemoryBlock& out)override{auto xml=state.copyState().createXml();copyXmlToBinary(*xml,out);}
  void setStateInformation(const void* data,int size)override{auto xml=getXmlFromBinary(data,size);if(xml&&xml->hasTagName(state.state.getType()))state.replaceState(juce::ValueTree::fromXml(*xml));}
